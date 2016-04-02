@@ -5,11 +5,11 @@ var pollingtoevent = require('polling-to-event');
 	module.exports = function(homebridge){
 		Service = homebridge.hap.Service;
 		Characteristic = homebridge.hap.Characteristic;
-		homebridge.registerAccessory("homebridge-http", "Http", HttpAccessory);
+		homebridge.registerAccessory("homebridge-bluesound", "Bluesound", BluesoundAccessory);
 	}
 
 
-	function HttpAccessory(log, config) {
+	function BluesoundAccessory(log, config) {
 		this.log = log;
 
 		// url info
@@ -97,7 +97,7 @@ var pollingtoevent = require('polling-to-event');
 	}
 	}
 
-	HttpAccessory.prototype = {
+	BluesoundAccessory.prototype = {
 
 	httpRequest: function(url, body, method, username, password, sendimmediately, callback) {
 		request({
