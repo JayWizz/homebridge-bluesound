@@ -1,7 +1,7 @@
 {
-  "name": "homebridge-http",
+  "name": "homebridge-bluesound",
   "version": "0.0.9",
-  "description": "http(s) plugin for Homebridge: https://github.com/nfarina/homebridge",
+  "description": "Bluesound plugin for Homebridge: https://github.com/nfarina/homebridge",
   "license": "ISC",
   "keywords": [
     "homebridge-plugin"
@@ -11,15 +11,11 @@
     "homebridge": ">=0.2.0"
   },
   "author": {
-    "name": "Adrian Rudman"
+    "name": "Jakob Vang"
   },
-  "contributors":[
-  { "name" : "NovaGL"},
-  { "name" : "David Parry"}
-  ], 
   "repository": {
     "type": "git",
-    "url": "git://github.com/rudders/homebridge-http.git"
+    "url": "git://github.com/jayWizz/homebridge-bluesound.git"
   },
   "dependencies": {
     "request": "^2.65.0",
