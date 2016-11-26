@@ -1,6 +1,6 @@
 {
   "name": "homebridge-bluesound",
-  "version": "0.0.9",
+  "version": "0.1.0",
   "description": "Bluesound plugin for Homebridge: https://github.com/nfarina/homebridge",
   "license": "ISC",
   "keywords": [
@@ -19,6 +19,6 @@
   },
   "dependencies": {
     "request": "^2.65.0",
-	"polling-to-event": ">=2.0.2"
+    "polling-to-event": ">=2.0.2"
   }
 }
