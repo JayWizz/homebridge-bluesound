@@ -12,22 +12,26 @@ var pollingtoevent = require('polling-to-event');
 	function BluesoundAccessory(log, config) {
 		this.log = log;
 
-		// url info
-		this.on_url                 = config["on_url"];
-		this.on_body                = config["on_body"];
-		this.off_url                = config["off_url"];
-		this.off_body               = config["off_body"];
-		this.status_url             = config["status_url"];
-		this.brightness_url         = config["brightness_url"];
-		this.brightnesslvl_url      = config["brightnesslvl_url"];
+	    // url info
+		this.ip = config["ip"];
+		this.port = config["port"];
+		this.play_url = this.ip + this.port + "/play";        //config["on_url"];
+        this.play_body                = config["play_body"];
+
+        this.stop_url = this.ip + this.port + "/pause";        //config["off_url"];
+		this.stop_body               = config["stop_body"];
+
+		this.status_url = config["status_url"];
+		this.volume_url         = config["volume_url"];
+		this.volumelvl_url      = config["volumelvl_url"];
 		this.http_method            = config["http_method"] 	  	 	|| "GET";;
-		this.http_brightness_method = config["http_brightness_method"]  || this.http_method;
+		this.http_volume_method = config["http_volume_method"]  || this.http_method;
 		this.username               = config["username"] 	  	 	 	|| "";
 		this.password               = config["password"] 	  	 	 	|| "";
 		this.sendimmediately        = config["sendimmediately"] 	 	|| "";
 		this.service                = config["service"] 	  	 	 	|| "Switch";
 		this.name                   = config["name"];
-		this.brightnessHandling     = config["brightnessHandling"] 	 	|| "no";
+		this.volumeHandling     = config["volumeHandling"] 	 	|| "no";
 		this.switchHandling 		= config["switchHandling"] 		 	|| "no";
 		
 		//realtime polling info
@@ -71,11 +75,11 @@ var pollingtoevent = require('polling-to-event');
 		});
 
 	}
-	// Brightness Polling
-	if (this.brightnesslvl_url && this.brightnessHandling =="realtime") {
-		var brightnessurl = this.brightnesslvl_url;
+	// Volume Polling
+	if (this.volumelvl_url && this.volumeHandling =="realtime") {
+		var volumeurl = this.volumelvl_url;
 		var levelemitter = pollingtoevent(function(done) {
-	        	that.httpRequest(brightnessurl, "", "GET", that.username, that.password, that.sendimmediately, function(error, response, responseBody) {
+	        	that.httpRequest(volumeurl, "", "GET", that.username, that.password, that.sendimmediately, function(error, response, responseBody) {
             		if (error) {
                 			that.log('HTTP get power function failed: %s', error.message);
 							return;
@@ -89,8 +93,8 @@ var pollingtoevent = require('polling-to-event');
 			that.currentlevel = parseInt(data);
 
 			if (that.lightbulbService) {				
-				that.log(that.service, "received brightness",that.brightnesslvl_url, "level is currently", that.currentlevel); 		        
-				that.lightbulbService.getCharacteristic(Characteristic.Brightness)
+				that.log(that.service, "received volume",that.volumelvl_url, "level is currently", that.currentlevel); 		        
+				that.lightbulbService.getCharacteristic(Characteristic.volume)
 				.setValue(that.currentlevel);
 			}        
     	});
@@ -120,19 +124,19 @@ var pollingtoevent = require('polling-to-event');
 		var url;
 		var body;
 		
-		if (!this.on_url || !this.off_url) {
+		if (!this.play_url || !this.stop_url) {
 				this.log.warn("Ignoring request; No power url defined.");
 				callback(new Error("No power url defined."));
 				return;
 		}
 		
 		if (powerOn) {
-			url = this.on_url;
-			body = this.on_body;
+			url = this.play_url;
+			body = this.play_body;
 			this.log("Setting power state to on");
 		} else {
-			url = this.off_url;
-			body = this.off_body;
+			url = this.stop_url;
+			body = this.stop_body;
 			this.log("Setting power state to off");
 		}
 		
@@ -170,46 +174,46 @@ var pollingtoevent = require('polling-to-event');
 	}.bind(this));
   },
 
-	getBrightness: function(callback) {
-		if (!this.brightnesslvl_url) {
-			this.log.warn("Ignoring request; No brightness level url defined.");
-			callback(new Error("No brightness level url defined."));
+	getVolume: function(callback) {
+		if (!this.volumelvl_url) {
+			this.log.warn("Ignoring request; No volume level url defined.");
+			callback(new Error("No volume level url defined."));
 			return;
 		}		
-			var url = this.brightnesslvl_url;
-			this.log("Getting Brightness level");
+			var url = this.volumelvl_url;
+			this.log("Getting volume level");
 	
 			this.httpRequest(url, "", "GET", this.username, this.password, this.sendimmediately, function(error, response, responseBody) {
 			if (error) {
-				this.log('HTTP get brightness function failed: %s', error.message);
+				this.log('HTTP get volume function failed: %s', error.message);
 				callback(error);
 			} else {			
 				var binaryState = parseInt(responseBody);
 				var level = binaryState;
-				this.log("brightness state is currently %s", binaryState);
+				this.log("volume state is currently %s", binaryState);
 				callback(null, level);
 			}
 			}.bind(this));
 	  },
 
-	setBrightness: function(level, callback) {
+	setVolume: function(level, callback) {
 		
-		if (!this.brightness_url) {
-			this.log.warn("Ignoring request; No brightness url defined.");
-			callback(new Error("No brightness url defined."));
+		if (!this.volume_url) {
+			this.log.warn("Ignoring request; No volume url defined.");
+			callback(new Error("No volume url defined."));
 			return;
 		}    
 	
-		var url = this.brightness_url.replace("%b", level)
+		var url = this.volume_url.replace("%b", level)
 	
-		this.log("Setting brightness to %s", level);
+		this.log("Setting volume to %s", level);
 	
-		this.httpRequest(url, "", this.http_brightness_method, this.username, this.password, this.sendimmediately, function(error, response, body) {
+		this.httpRequest(url, "", this.http_volume_method, this.username, this.password, this.sendimmediately, function(error, response, body) {
 		if (error) {
-			this.log('HTTP brightness function failed: %s', error);
+			this.log('HTTP volume function failed: %s', error);
 			callback(error);
 		} else {
-			this.log('HTTP brightness function succeeded!');
+			this.log('HTTP volume function succeeded!');
 			callback();
 		}
 		}.bind(this));
@@ -278,17 +282,17 @@ var pollingtoevent = require('polling-to-event');
 				.on('set', this.setPowerState.bind(this));
 				break;
 			}
-			// Brightness Polling 
-			if (this.brightnessHandling == "realtime") {
+			// volume Polling 
+			if (this.volumeHandling == "realtime") {
 				this.lightbulbService 
-				.addCharacteristic(new Characteristic.Brightness())
+				.addCharacteristic(new Characteristic.volume())
 				.on('get', function(callback) {callback(null, that.currentlevel)})
-				.on('set', this.setBrightness.bind(this));
-			} else if (this.brightnessHandling == "yes") {
+				.on('set', this.setvolume.bind(this));
+			} else if (this.volumeHandling == "yes") {
 				this.lightbulbService
-				.addCharacteristic(new Characteristic.Brightness())
-				.on('get', this.getBrightness.bind(this))
-				.on('set', this.setBrightness.bind(this));							
+				.addCharacteristic(new Characteristic.volume())
+				.on('get', this.getvolume.bind(this))
+				.on('set', this.setvolume.bind(this));							
 			}
 	
 			return [informationService, this.lightbulbService];
