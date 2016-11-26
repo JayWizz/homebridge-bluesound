@@ -15,10 +15,10 @@ var pollingtoevent = require('polling-to-event');
 	    // url info
 		this.ip = config["ip"];
 		this.port = config["port"];
-		this.play_url = config["on_url"];//this.ip + ":" + this.port + "/play";        
+		this.play_url = config["play_url"];//this.ip + ":" + this.port + "/play";        
         this.play_body                = config["play_body"];
 
-        this.stop_url = config["off_url"]; //this.ip + ":" + this.port + "/pause";        
+        this.stop_url = config["stop_url"]; //this.ip + ":" + this.port + "/pause";        
 		this.stop_body               = config["stop_body"];
 
 		this.status_url = config["status_url"];
