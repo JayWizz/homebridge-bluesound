@@ -125,7 +125,7 @@ var pollingtoevent = require('polling-to-event');
 		var body;
 		
 		if (!this.play_url || !this.stop_url) {
-				this.log.warn("Ignoring request; No power url defined.");
+				this.log.warn("Ignoring request; No power url defined. Play_Url: " + this.play_url + " , Stop_Url: " + this.stop_url + " .");
 				callback(new Error("No power url defined."));
 				return;
 		}
