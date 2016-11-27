@@ -13,26 +13,26 @@ var pollingtoevent = require('polling-to-event');
 		this.log = log;
 
 	    // url info
-		this.ip = config["ip"];
-		this.port = config["port"];
-		this.play_url = config["play_url"];//this.ip + ":" + this.port + "/play";        
-        this.play_body                = config["play_body"];
+		this.ip 		= config["ip"];
+		this.port 		= config["port"];
+		this.play_url 		= this.ip + ":" + this.port + "/Play";        
+        	this.play_body          = config["play_body"];
 
-        this.stop_url = config["stop_url"]; //this.ip + ":" + this.port + "/pause";        
-		this.stop_body               = config["stop_body"];
+        	this.stop_url 		= this.ip + ":" + this.port + "/Pause";        
+		this.stop_body          = config["stop_body"];
 
-		this.status_url = config["status_url"];
-		this.volume_url         = config["volume_url"];
-		this.volumelvl_url      = config["volumelvl_url"];
-		this.http_method            = config["http_method"] 	  	 	|| "GET";;
+		this.status_url 	= config["status_url"];
+		this.volume_url         = this.ip + ":" + this.port + "/Volume?level=%b"	//config["volume_url"];
+		this.volumelvl_url      = this.ip + ":" + this.port + "/Volume"			//config["volumelvl_url"];
+		this.http_method        = config["http_method"] 	  	 	|| "GET";;
 		this.http_volume_method = config["http_volume_method"]  || this.http_method;
-		this.username               = config["username"] 	  	 	 	|| "";
-		this.password               = config["password"] 	  	 	 	|| "";
-		this.sendimmediately        = config["sendimmediately"] 	 	|| "";
-		this.service                = config["service"] 	  	 	 	|| "Switch";
-		this.name                   = config["name"];
+		this.username           = config["username"] 	  	 	 	|| "";
+		this.password           = config["password"] 	  	 	 	|| "";
+		this.sendimmediately    = config["sendimmediately"] 	 	|| "";
+		this.service            = config["service"] 	  	 	 	|| "Switch";
+		this.name               = config["name"];
 		this.volumeHandling     = config["volumeHandling"] 	 	|| "no";
-		this.switchHandling 		= config["switchHandling"] 		 	|| "no";
+		this.switchHandling 	= config["switchHandling"] 		 	|| "no";
 		
 		//realtime polling info
 		this.state = false;
@@ -94,7 +94,7 @@ var pollingtoevent = require('polling-to-event');
 
 			if (that.lightbulbService) {				
 				that.log(that.service, "received volume",that.volumelvl_url, "level is currently", that.currentlevel); 		        
-				that.lightbulbService.getCharacteristic(Characteristic.volume)
+				that.lightbulbService.getCharacteristic(Characteristic.Brightness)
 				.setValue(that.currentlevel);
 			}        
     	});
@@ -285,14 +285,14 @@ var pollingtoevent = require('polling-to-event');
 			// volume Polling 
 			if (this.volumeHandling == "realtime") {
 				this.lightbulbService 
-				.addCharacteristic(new Characteristic.volume())
+				.addCharacteristic(new Characteristic.Brightness())
 				.on('get', function(callback) {callback(null, that.currentlevel)})
-				.on('set', this.setvolume.bind(this));
+				.on('set', this.setVolume.bind(this));
 			} else if (this.volumeHandling == "yes") {
 				this.lightbulbService
-				.addCharacteristic(new Characteristic.volume())
-				.on('get', this.getvolume.bind(this))
-				.on('set', this.setvolume.bind(this));							
+				.addCharacteristic(new Characteristic.Brightness())
+				.on('get', this.getVolume.bind(this))
+				.on('set', this.setVolume.bind(this));							
 			}
 	
 			return [informationService, this.lightbulbService];
