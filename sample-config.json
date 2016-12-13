@@ -11,15 +11,9 @@
     "accessories": [ {
 	        "accessory": "Bluesound",
                 "name": "Kitchen Speakers",
-			"switchHandling": "realtime",
-				"http_method": "GET",
-				"on_url":      "http://192.168.2.94:11000/Play",
-				"off_url":     "http://192.168.2.94:11000/Pause",
-				"status_url":  "http://192.168.2.94:11000/Status",				
-			"service": "Light",
-				"brightnessHandling": "yes",
-				"brightness_url":     "http://192.168.2.94:11000/Volume?level=%b",
-				"brightnesslvl_url":  "http://192.168.2.94:11000/Status"			
+		"switchHandling": "realtime",
+		"ip": "http://192.168.1.10",
+		"port": "11000"
 									    
        } 
     ]
