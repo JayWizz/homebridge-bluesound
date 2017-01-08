@@ -35,10 +35,6 @@ var xml2js = require("xml2js");
 		this.name               = config["name"];
 		this.volumeHandling     = "Yes";						//config["volumeHandling"] || "no";
 		this.switchHandling 	= config["switchHandling"] 		 	|| "no";
-		
-		this.brand		= "";
-		this.model		= "";
-		this.modelNo		= "";
 
 		//realtime polling info
 		this.state = false;
@@ -58,6 +54,7 @@ var xml2js = require("xml2js");
             		}
         		})
 			}, {longpolling:true,interval:300,longpollEventName:"statuspoll"});
+
 
 		if (this.syncstatus_url){
 			var sync_url = this.syncstatus_url;
@@ -82,7 +79,7 @@ var xml2js = require("xml2js");
 					});
 				}
 			});
-		};
+		};		
 
 		statusemitter.on("statuspoll", function(data) {       
         	
@@ -286,19 +283,15 @@ var xml2js = require("xml2js");
 		
 		var that = this;
 
-		var brand = "Some Brand";
-		console.dir(brand);
-		var model = "Some Model";
-				
 		// you can OPTIONALLY create an information service if you wish to override
 		// the default values for things like serial number, model, etc.
 		var informationService = new Service.AccessoryInformation();
 		
 		informationService
-		.setCharacteristic(Characteristic.Manufacturer, brand)
-		.setCharacteristic(Characteristic.Model, model)
-		.setCharacteristic(Characteristic.SerialNumber, "HTTP Serial Number");
-	
+		.setCharacteristic(Characteristic.Manufacturer, "Bluesound")
+		.setCharacteristic(Characteristic.Model, "Bluesound Model")
+		.setCharacteristic(Characteristic.SerialNumber, "Bluesound Model No");
+
 		switch (this.service) {
 		case "Light":	
 			this.lightbulbService = new Service.Lightbulb(this.name);			
