@@ -93,14 +93,14 @@ var xml2js = require("xml2js");
 			
 		});
 
-		if (stringState == "pause") {
+		if (stringState == "play" || straingState == "stream") {
 			//that.log("Current stringState: " + stringState);
-			//that.log("State is Pause");
-			binaryState = 0;
-		} else {
-			//that.log("Current State: " + stringState);
 			//that.log("State is Play or Stream");
 			binaryState = 1;
+		} else {
+			//that.log("Current State: " + stringState);
+			//that.log("State is Pause or Connecting");
+			binaryState = 0;
 		};
 		
 	    	that.state = binaryState > 0;
