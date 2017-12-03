@@ -293,8 +293,8 @@ var xml2js = require("xml2js");
 		.setCharacteristic(Characteristic.SerialNumber, "Bluesound Model No");
 
 		switch (this.service) {
-		case "Light":	
-			this.lightbulbService = new Service.Lightbulb(this.name);			
+		case "Light":
+			this.lightbulbService = new Service.Lightbulb(this.name);
 			switch (this.switchHandling) {
 			//Power Polling
 			case "yes" :
@@ -309,27 +309,51 @@ var xml2js = require("xml2js");
 				.on('get', function(callback) {callback(null, that.state)})
 				.on('set', this.setPowerState.bind(this));
 				break;
-			default:		
+			default:
 				this.lightbulbService
-				.getCharacteristic(Characteristic.On)	
+				.getCharacteristic(Characteristic.On)
 				.on('set', this.setPowerState.bind(this));
 				break;
 			}
-			// volume Polling 
+			// volume Polling
 			if (this.volumeHandling == "realtime") {
-				this.lightbulbService 
+				this.lightbulbService
 				.addCharacteristic(new Characteristic.Brightness())
 				.on('get', function(callback) {callback(null, that.currentlevel)})
 				.on('set', this.setVolume.bind(this));
-			} else if (this.volumeHandling == "yes") {
+			}
+			else if (this.volumeHandling == "yes") {
 				this.lightbulbService
 				.addCharacteristic(new Characteristic.Brightness())
 				.on('get', this.getVolume.bind(this))
-				.on('set', this.setVolume.bind(this));							
+				.on('set', this.setVolume.bind(this));
 			}
-	
 			return [informationService, this.lightbulbService];
-			break;		
+			break;
+		case "Switch":
+			this.switchService = new Service.Switch(this.name);
+			switch (this.switchHandling) {
+				//Power Polling
+				case "yes":
+					this.switchService
+					.getCharacteristic(Characteristic.On)
+					.on('get', this.getPowerState.bind(this))
+					.on('set', this.setPowerState.bind(this));
+					break;
+				case "realtime":
+					this.switchService
+					.getCharacteristic(Characteristic.On)
+					.on('get', function(callback) {callback(null, that.state)})
+					.on('set', this.setPowerState.bind(this));
+					break;
+				default	:
+					this.switchService
+					.getCharacteristic(Characteristic.On)
+					.on('set', this.setPowerState.bind(this));
+					break;
+				}
+			return [informationService, this.switchService];
+			break;
 		}
 	}
 };
