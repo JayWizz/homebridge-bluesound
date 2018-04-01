@@ -93,7 +93,7 @@ var xml2js = require("xml2js");
 			
 		});
 
-		if (stringState == "play" || straingState == "stream") {
+		if (stringState == "play" || stringState == "stream") {
 			//that.log("Current stringState: " + stringState);
 			//that.log("State is Play or Stream");
 			binaryState = 1;
